@@ -3,7 +3,25 @@
     Categories
 @endsection
 @section('css')
-{{--    <link rel="stylesheet" href="{{ asset('assets/css/sub-header.css') }}">--}}
+    <style>
+    .dataTables_length {
+        --tblr-text-opacity: 1;
+        color: rgba(var(--tblr-muted-rgb),var(--tblr-text-opacity))!important;
+        padding: 1rem!important;
+        /* padding-bottom: 1rem!important; */
+        border-bottom: var(--tblr-border-width) var(--tblr-border-style) rgba(4,32,69,.14)!important;
+    }
+
+    .dataTables_filter {
+        top: 82px;
+        position: absolute;
+        right: 0px;
+        padding-right: 1rem!important;
+        --tblr-text-opacity: 1;
+        color: rgba(var(--tblr-muted-rgb),var(--tblr-text-opacity))!important;
+    }
+    }
+    </style>
 @endsection
 @section('content')
     <div class="row row-cards">

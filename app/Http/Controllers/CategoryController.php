@@ -29,5 +29,6 @@ class CategoryController extends Controller
                 ->make(true);
         }
         return view('categories.index');
+//        return view('categories.action');
     }
 }
