@@ -4,22 +4,23 @@
 @endsection
 @section('css')
     <style>
-    .dataTables_length {
-        --tblr-text-opacity: 1;
-        color: rgba(var(--tblr-muted-rgb),var(--tblr-text-opacity))!important;
-        padding: 1rem!important;
-        /* padding-bottom: 1rem!important; */
-        border-bottom: var(--tblr-border-width) var(--tblr-border-style) rgba(4,32,69,.14)!important;
+    .dataTables_wrapper .dataTables_length {
+        float:left;
+        margin: 13px;
+    }
+    .dataTables_wrapper .dataTables_filter {
+        float: right;
+        margin: 13px;
     }
 
-    .dataTables_filter {
-        top: 82px;
-        position: absolute;
-        right: 0px;
-        padding-right: 1rem!important;
-        --tblr-text-opacity: 1;
-        color: rgba(var(--tblr-muted-rgb),var(--tblr-text-opacity))!important;
+    #DataTables_Table_0 {
+        border-top: var(--tblr-border-width) var(--tblr-border-style) rgba(4,32,69,.14)!important;
+
     }
+
+    .add-button {
+        background-color: black;
+        color: white;
     }
     </style>
 @endsection
@@ -29,7 +30,7 @@
             <div class="card">
                 <div class="card-header d-flex">
                     <h3 class="card-title">Categories</h3>
-                    <a href="#" class="btn ms-auto" data-bs-toggle="modal" data-bs-target="#modal-report">
+                    <a href="#" class="btn ms-auto add-button" data-bs-toggle="modal" data-bs-target="#modal-report">
                         Add
                     </a>
                 </div>
