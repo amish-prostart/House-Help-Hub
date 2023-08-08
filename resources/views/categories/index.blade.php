@@ -17,6 +17,11 @@
         border-top: var(--tblr-border-width) var(--tblr-border-style) rgba(4,32,69,.14)!important;
 
     }
+
+    .add-button {
+        background-color: black;
+        color: white;
+    }
     </style>
 @endsection
 @section('content')
@@ -25,7 +30,7 @@
             <div class="card">
                 <div class="card-header d-flex">
                     <h3 class="card-title">Categories</h3>
-                    <a href="#" class="btn ms-auto" data-bs-toggle="modal" data-bs-target="#modal-report">
+                    <a href="#" class="btn ms-auto add-button" data-bs-toggle="modal" data-bs-target="#modal-report">
                         Add
                     </a>
                 </div>
