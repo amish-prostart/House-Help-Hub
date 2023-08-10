@@ -51,8 +51,8 @@
             </div>
         </div>
     </div>
-    <div class="modal modal-blur fade" id="modal-report" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+    <div class="modal fade" id="modal-report" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Categories</h5>
@@ -65,13 +65,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
-                        Cancel
-                    </a>
-                    <a href="#" class="btn btn-primary ms-auto" data-bs-dismiss="modal">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
-                        Save
-                    </a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary ms-auto" data-bs-dismiss="modal">Save</button>
                 </div>
             </div>
         </div>
@@ -79,20 +74,113 @@
 @endsection
 @section('js')
     <script type="text/javascript">
-        $(function () {
 
-            var table = $('.data-table').DataTable({
-                processing: true,
-                serverSide: true,
-                ajax: "{{ route('categories.index') }}",
-                columns: [
-                    {data: 'id', name: 'id'},
-                    {data: 'name', name: 'name'},
-                    {data: 'status', name: 'status'},
-                    {data: 'action', name: 'action', orderable: false, searchable: false},
-                ]
+    </script>
+@endsection
+
+@section('scripts')
+    <script>
+        $(document).ready(function () {
+            // Load categories on page load
+            // loadCategories();
+
+            $(function () {
+
+                var table = $('.data-table').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: "{{ route('categories.index') }}",
+                    columns: [
+                        {data: 'id', name: 'id'},
+                        {data: 'name', name: 'name'},
+                        {data: 'status', name: 'status'},
+                        {data: 'action', name: 'action', orderable: false, searchable: false},
+                    ]
+                });
+
             });
 
+            // Show category modal for creating/editing
+            $('#createCategory').on('click', function () {
+                $('#categoryId').val('');
+                $('#name').val('');
+                $('#status').val(1);
+                $('#categoryModal').modal('show');
+            });
+
+            // Save category using AJAX
+            $('#saveCategory').on('click', function () {
+                var categoryId = $('#categoryId').val();
+                var name = $('#name').val();
+                var status = $('#status').val();
+
+                $.ajax({
+                    url: categoryId ? '/categories/' + categoryId : '/categories',
+                    type: categoryId ? 'PUT' : 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        name: name,
+                        status: status,
+                    },
+                    success: function (response) {
+                        loadCategories();
+                        $('#categoryModal').modal('hide');
+                    },
+                });
+            });
+
+            // Edit category
+            $('#categoryTableBody').on('click', '.edit-category', function () {
+                var categoryId = $(this).data('id');
+
+                $.ajax({
+                    url: '/categories/' + categoryId + '/edit',
+                    type: 'GET',
+                    success: function (response) {
+                        $('#categoryId').val(response.category.id);
+                        $('#name').val(response.category.name);
+                        $('#status').val(response.category.status);
+                        $('#categoryModal').modal('show');
+                    },
+                });
+            });
+
+            // Delete category
+            $('#categoryTableBody').on('click', '.delete-category', function () {
+                var categoryId = $(this).data('id');
+
+                if (confirm('Are you sure you want to delete this category?')) {
+                    $.ajax({
+                        url: '/categories/' + categoryId,
+                        type: 'DELETE',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                        },
+                        success: function (response) {
+                            loadCategories();
+                        },
+                    });
+                }
+            });
+
+            // Load categories using AJAX
+            function loadCategories() {
+                $.ajax({
+                    url: '/categories',
+                    type: 'GET',
+                    success: function (response) {
+                        var categories = response.categories;
+                        var categoryTable = '';
+
+                        for (var i = 0; i < categories.length; i++) {
+                            var statusBadge = categories[i].status ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-secondary">Inactive</span>';
+                            categoryTable += '<tr><td>' + categories[i].name + '</td><td>' + statusBadge + '</td><td><button class="btn btn-sm btn-info edit-category" data-id="' + categories[i].id + '">Edit</button> <button class="btn btn-sm btn-danger delete-category" data-id="' + categories[i].id + '">Delete</button></td></tr>';
+                        }
+
+                        $('#categoryTableBody').html(categoryTable);
+                    },
+                });
+            }
         });
     </script>
 @endsection

@@ -10,4 +10,13 @@ class Category extends Model
     use HasFactory;
 
     protected $fillable = ['name','status'];
+
+    /**
+     * Validation rules
+     *
+     * @var array
+     */
+    public static $rules = [
+        'name' => 'required|is_unique:categories,name',
+    ];
 }
