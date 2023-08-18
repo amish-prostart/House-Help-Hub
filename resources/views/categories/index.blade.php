@@ -22,6 +22,67 @@
         background-color: black;
         color: white;
     }
+
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 49px;
+        height: 27px;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 20px;
+        width: 20px;
+        left: 2px;
+        bottom: 4px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(26px);
+        -ms-transform: translateX(26px);
+        transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
     </style>
 @endsection
 @section('content')
@@ -30,12 +91,12 @@
             <div class="card">
                 <div class="card-header d-flex">
                     <h3 class="card-title">Categories</h3>
-                    <a href="#" class="btn ms-auto add-button" data-bs-toggle="modal" data-bs-target="#modal-report">
+                    <a href="#" class="btn ms-auto add-button" data-bs-toggle="modal" data-bs-target="#categoryCreateModal">
                         Add
                     </a>
                 </div>
                 <div class="table-responsive">
-                    <table class="table card-table table-vcenter text-nowrap datatable data-table">
+                    <table class="table card-table table-vcenter text-nowrap datatable category-datatable">
                         <thead>
                         <tr>
                             <th>ID</th>
@@ -51,81 +112,63 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="modal-report" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Categories</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">Name</label>
-                        <input type="text" class="form-control" name="example-text-input" placeholder="Enter Category name">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary ms-auto" data-bs-dismiss="modal">Save</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    @include('categories.create_modal')
 @endsection
 @section('js')
-    <script type="text/javascript">
-
-    </script>
-@endsection
-
-@section('scripts')
     <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
         $(document).ready(function () {
-            // Load categories on page load
-            // loadCategories();
-
-            $(function () {
-
-                var table = $('.data-table').DataTable({
+                var table = $('.category-datatable').DataTable({
                     processing: true,
                     serverSide: true,
-                    ajax: "{{ route('categories.index') }}",
+                    ajax: route('categories.index'),
                     columns: [
                         {data: 'id', name: 'id'},
                         {data: 'name', name: 'name'},
-                        {data: 'status', name: 'status'},
+                        {data: function (row) {
+                                let checked = row.status === 1 ? 'checked' : '';
+                                return `<label class="switch">
+                        <input type="checkbox" name="status" >
+                        <span class="slider round"></span>
+                    </label>`
+                            }, name: 'status'},
                         {data: 'action', name: 'action', orderable: false, searchable: false},
-                    ]
+                    ],
+                    order: [[0, 'desc']]
                 });
 
-            });
-
             // Show category modal for creating/editing
-            $('#createCategory').on('click', function () {
-                $('#categoryId').val('');
-                $('#name').val('');
-                $('#status').val(1);
-                $('#categoryModal').modal('show');
-            });
+            // $('#categoryCreateForm').on('click', function () {
+            //     $('#categoryId').val('');
+            //     $('#name').val('');
+            //     $('#status').val(1);
+            //     $('#categoryModal').modal('show');
+            // });
 
             // Save category using AJAX
-            $('#saveCategory').on('click', function () {
-                var categoryId = $('#categoryId').val();
-                var name = $('#name').val();
-                var status = $('#status').val();
+            $('#addCategoryBtn').on('click', function (e) {
+                e.preventDefault();
 
                 $.ajax({
-                    url: categoryId ? '/categories/' + categoryId : '/categories',
-                    type: categoryId ? 'PUT' : 'POST',
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        name: name,
-                        status: status,
+                    data: $('#categoryCreateForm').serialize(),
+                    url: route('categories.store'),
+                    type: "POST",
+                    dataType: 'json',
+                    success: function (data) {
+                        $('#categoryCreateForm').trigger("reset");
+                        $('#categoryCreateModal').modal('hide');
+                        toastr.success('Category saved Successfully.');
+                        table.draw();
+
                     },
-                    success: function (response) {
-                        loadCategories();
-                        $('#categoryModal').modal('hide');
-                    },
+                    error: function (data) {
+                        $('#saveBtn').html('Save Changes');
+                    }
                 });
             });
 
@@ -146,21 +189,39 @@
             });
 
             // Delete category
-            $('#categoryTableBody').on('click', '.delete-category', function () {
+            $(document).on('click', '#categoryDeleteBtn', function (e) {
+                e.preventDefault();
                 var categoryId = $(this).data('id');
-
-                if (confirm('Are you sure you want to delete this category?')) {
-                    $.ajax({
-                        url: '/categories/' + categoryId,
-                        type: 'DELETE',
-                        data: {
-                            _token: '{{ csrf_token() }}',
-                        },
-                        success: function (response) {
-                            loadCategories();
-                        },
-                    });
-                }
+                swal({
+                        title: "Do you want to delete this User?",
+                        type: "warning",
+                        showCancelButton: true,
+                        confirmButtonClass: "btn",
+                        confirmButtonText: "Confirm",
+                        cancelButtonText: "Cancel",
+                        closeOnConfirm: true,
+                        closeOnCancel: true,
+                        timer: 5000
+                    }).then(function (e) {
+                        $.ajax({
+                            type: 'DELETE',
+                            url: route('categories.destroy',categoryId),
+                            dataType: 'JSON',
+                            success: function (results) {
+                                if (results.success === true) {
+                                    swal("Done!", results.message, "success");
+                                    // refresh page after 2 seconds
+                                    setTimeout(function(){
+                                        location.reload();
+                                    },2000);
+                                } else {
+                                    swal.fire("Error!", results.message, "error");
+                                }
+                            }
+                        });
+                }, function (dismiss) {
+                    return false;
+                })
             });
 
             // Load categories using AJAX

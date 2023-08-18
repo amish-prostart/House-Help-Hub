@@ -17,6 +17,6 @@ class Category extends Model
      * @var array
      */
     public static $rules = [
-        'name' => 'required|is_unique:categories,name',
+        'name' => 'required|unique:categories,name',
     ];
 }
