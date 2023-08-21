@@ -36,6 +36,7 @@
 <script src="{{ asset('dist/js/demo-theme.min.js') }}"></script>
 @include('sweetalert::alert')
 <div class="page">
+    @routes
     <!-- Sidebar -->
 @include('layouts.sidebar')
     <div class="page-wrapper">
