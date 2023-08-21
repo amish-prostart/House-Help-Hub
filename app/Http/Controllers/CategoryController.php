@@ -24,18 +24,13 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = Category::all();
-            return Datatables::of($data)
+            return Datatables::of(Category::all())
                 ->addIndexColumn()
-                ->addColumn('action', function($row){
-
-                    $btn = '<a href="javascript:void(0)" class="edit btn btn-primary btn-sm">View</a>';
-
-                    return $btn;
-                })
+                ->addColumn('action','categories.action')
                 ->rawColumns(['action'])
                 ->make(true);
         }
+
         return view('categories.index');
     }
 
@@ -49,10 +44,10 @@ class CategoryController extends Controller
     public function store(CreateCategoryRequest $request)
     {
         $input = $request->all();
-        $input['is_active'] = ! isset($input['is_active']) ? false : true;
+        $input['status'] = ! isset($input['status']) ? false : true;
         $this->categoryRepository->create($input);
 
-        return response()->json(['success' => true]);
+        return response()->json(['success' => 'Category saved successfully.']);
     }
 
     /**
@@ -106,22 +101,15 @@ class CategoryController extends Controller
      * Remove the specified Category from storage.
      *
      * @param  Category  $category
+     * @return \Illuminate\Http\JsonResponse
      * @throws Exception
      *
-     * @return JsonResponse
      */
     public function destroy(Category $category)
     {
-        $medicineCategoryModel = [
-            Medicine::class,
-        ];
-        $result = canDelete($medicineCategoryModel, 'category_id', $category->id);
-        if ($result) {
-            return $this->sendError(__('messages.flash.medicine_category_cant_deleted'));
-        }
         $this->categoryRepository->delete($category->id);
 
-        return $this->sendSuccess(__('messages.flash.medicine_category_deleted'));
+        return response()->json(['success' => true]);
     }
 
     /**
