@@ -32,5 +32,7 @@ Route::middleware('auth')->group(function () {
 
 Route::get('admin/dashboard', [DashboardController::class, 'dashboard'])->name('admin.dashboard');
 Route::resource('categories', CategoryController::class);
+Route::post('categories/{category_id}/active-deactive',
+    [CategoryController::class, 'activeDeActiveCategory'])->name('category.active-deactive');
 
 require __DIR__.'/auth.php';

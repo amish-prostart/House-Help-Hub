@@ -82,7 +82,9 @@ const mix = require('laravel-mix')
 mix.js('resources/assets/js/custom/custom.js',
     'public/assets/js/custom/custom.js').
     js('resources/assets/js/custom/helpers.js',
-        'public/assets/js/custom/helpers.js').
+    'public/assets/js/custom/helpers.js').
+    js('resources/assets/js/category/category.js',
+    'public/assets/js/category/category.js').
 version();
 //     js('resources/assets/js/custom/new-edit-modal-form.js',
 //         'public/assets/js/custom/new-edit-modal-form.js').
