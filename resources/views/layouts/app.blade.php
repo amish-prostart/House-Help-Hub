@@ -78,6 +78,8 @@
 <!-- Tabler Core -->
 <script src="{{ asset('dist/js/tabler.min.js') }}" defer></script>
 <script src="{{ asset('dist/js/demo.min.js') }}" defer></script>
+<script src="{{ mix('assets/js/custom/helpers.js') }}"></script>
+<script src="{{ mix('assets/js/custom/custom.js') }}"></script>
 @routes
 @yield('js')
 <script>

@@ -1,69 +1,54 @@
 'use strict'
 
-let jsrender = require('jsrender')
+// let jsrender = require('jsrender')
 let csrfToken = $('meta[name="csrf-token"]').attr('content')
 $.ajaxSetup({
     headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+        'X-CSRF-TOKEN': csrfToken,
     },
 })
-
-document.addEventListener('turbo:load', initAllComponents)
-
-function initAllComponents () {
-    select2initialize()
-    refreshCsrfToken()
-    alertInitialize()
-    modalInputFocus()
-    inputFocus()
-    IOInitImageComponent()
-    IOInitSidebar()
-    bootstrapTooltip()
-}
-
+console.log('custom js mix');
 let firstTime = true
 
-function bootstrapTooltip () {
-        var tooltipTriggerList =
-            [].slice.call(
-                document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-        });
-}
+var tooltipTriggerList =
+    [].slice.call(
+        document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
+});
 
-function select2initialize () {
-    $('[data-control="select2"]').each(function () {
-        $(this).select2()
-    })
-}
 
-function refreshCsrfToken () {
-    csrfToken = $('meta[name="csrf-token"]').attr('content')
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': csrfToken,
-        },
-    })
-}
+$('[data-control="select2"]').each(function () {
+    $(this).select2()
+});
 
-function alertInitialize () {
+
+
+// csrfToken = $('meta[name="csrf-token"]').attr('content')
+// $.ajaxSetup({
+//     headers: {
+//         'X-CSRF-TOKEN': csrfToken,
+//     },
+// })
+
+
+
     $('.alert').delay(5000).slideUp(300)
-}
 
-const modalInputFocus = () => {
+
+
     $(function () {
         $('.modal').on('shown.bs.modal', function () {
             $(this).find('input:text').first().focus()
         })
     })
-}
 
-const inputFocus = () => {
+
+
     $('input:text:not([readonly="readonly"]):not([name="search"]):not(.front-input)').
         first().
         focus()
-}
+
 
 $(document).on('keydown', function (e) {
     if (e.keyCode === 27) {
@@ -81,14 +66,6 @@ $(document).on('select2:open', () => {
 
 $('[data-control="select2"]').each(function () {
     $(this).select2()
-})
-
-document.addEventListener('livewire:load', function () {
-    window.livewire.hook('message.processed', () => {
-        $('[data-control="select2"]').each(function () {
-            $(this).select2()
-        })
-    })
 })
 
 
@@ -290,11 +267,6 @@ window.screenLock = function () {
 window.screenUnLock = function () {
     $('body').css({ 'pointer-events': 'auto', 'opacity': '1' })
     $('#overlay-screen-lock').hide()
-}
-
-window.prepareTemplateRender = function (templateSelector, data) {
-    let template = jsrender.templates(templateSelector)
-    return template.render(data)
 }
 
 /**

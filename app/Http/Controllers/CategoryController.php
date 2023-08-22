@@ -8,7 +8,7 @@ use App\Repositories\CategoryRepository;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
-class CategoryController extends Controller
+class CategoryController extends AppBaseController
 {
     /** @var CategoryRepository */
     private $categoryRepository;
@@ -115,14 +115,14 @@ class CategoryController extends Controller
     /**
      * @param  int  $id
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function activeDeActiveCategory($id)
     {
         $category = Category::findOrFail($id);
-        $category->is_active = ! $category->is_active;
+        $category->status = ! $category->status;
         $category->save();
 
-        return $this->sendSuccess(__('messages.flash.medicine_category_updated'));
+        return $this->sendSuccess('Category updated successfully.');
     }
 }
