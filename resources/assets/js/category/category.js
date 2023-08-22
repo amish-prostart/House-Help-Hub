@@ -133,6 +133,7 @@ $(document).ready(function () {
             type: 'GET',
             success: function (result) {
                 if (result.success) {
+                    console.log(result)
                     let category = result.data
                     $('#editCategoryID').val(category.id)
                     $('#editCategoryName').val(category.name)
@@ -153,22 +154,18 @@ $(document).ready(function () {
 
     listenSubmit('#categoryEditForm', function (event) {
         event.preventDefault()
-        var loadingButton = jQuery(this).find('#editCategorySave')
+        var loadingButton = jQuery(this).find('#editCategoryBtn')
         loadingButton.button('loading')
-        var id = $('#editMedicineCategoryId').val()
+        var id = $('#editCategoryID').val()
         $.ajax({
-            url: $('#indexCategoriesUrl').val() + '/' + id,
+            url: route('categories.update',id),
             type: 'put',
             data: $(this).serialize(),
             success: function (result) {
                 if (result.success) {
                     displaySuccessMessage(result.message)
-                    $('#edit_categories_modal').modal('hide')
-                    if ($('#categoriesShowUrl').length) {
-                        window.location.href = $('#categoriesShowUrl').val()
-                    } else {
-                        livewire.emit('refresh')
-                    }
+                    $('#categoryEditModal').modal('hide')
+                    table.draw();
                 }
             },
             error: function (result) {
@@ -184,7 +181,7 @@ $(document).ready(function () {
         resetModalForm('#addMedicineCategoryForm', '#medicineCategoryErrorsBox')
     })
 
-    listenHiddenBsModal('#edit_categories_modal', function () {
+    listenHiddenBsModal('#categoryEditModal', function () {
         resetModalForm('#editMedicineCategoryForm',
             '#editMedicineCategoryErrorsBox')
     })

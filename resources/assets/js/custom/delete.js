@@ -3,12 +3,12 @@
 window.deleteItem = function (
     url, tableId = null, header, callFunction = null) {
     swal({
-        title: $('.deleteVariable').val() + '!',
-        text: $('.confirmVariable').val() + header + '?',
+        title: 'Delete!',
+        text: 'Are you sure you want to delete this?',
         icon: sweetAlertIcon,
         buttons: {
-            confirm: $('.yesVariable').val() + ',' + $('.deleteVariable').val(),
-            cancel: $('.noVariable').val() + ',' + $('.cancelVariable').val(),
+            confirm: 'Yes, Delete',
+            cancel: 'No, Cancel',
         },
     }).then((result) => {
         if (result) {
@@ -29,12 +29,12 @@ function deleteItemAjax (url, tableId = null, header, callFunction = null) {
             }
             swal({
                 icon: 'success',
-                title: $('.deletedVariable').val(),
+                title: 'Deleted',
                 confirmButtonColor: '#f62947',
-                text: header + ' ' + $('.hasBeenDeletedVariable').val(),
+                text: header + ' has been deleted',
                 timer: 2000,
                 buttons: {
-                    confirm: $('.okVariable').val(),
+                    confirm: 'Ok',
                 },
             })
             if (callFunction) {
@@ -49,7 +49,7 @@ function deleteItemAjax (url, tableId = null, header, callFunction = null) {
                 icon: 'error',
                 timer: 5000,
                 buttons: {
-                    confirm: $('.okVariable').val(),
+                    confirm: 'Ok',
                 },
             })
         },

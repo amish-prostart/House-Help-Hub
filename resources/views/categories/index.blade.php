@@ -113,6 +113,7 @@
         </div>
     </div>
     @include('categories.create_modal')
+    @include('categories.edit_modal')
 @endsection
 @section('js')
     <script src="{{ mix('assets/js/category/category.js') }}"></script>

@@ -7,7 +7,7 @@ $.ajaxSetup({
         'X-CSRF-TOKEN': csrfToken,
     },
 })
-console.log('custom js mix');
+
 let firstTime = true
 
 var tooltipTriggerList =

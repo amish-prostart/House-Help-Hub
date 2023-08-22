@@ -83,6 +83,8 @@ mix.js('resources/assets/js/custom/custom.js',
     'public/assets/js/custom/custom.js').
     js('resources/assets/js/custom/helpers.js',
     'public/assets/js/custom/helpers.js').
+    js('resources/assets/js/custom/delete.js',
+    'public/assets/js/custom/delete.js').
     js('resources/assets/js/category/category.js',
     'public/assets/js/category/category.js').
 version();
