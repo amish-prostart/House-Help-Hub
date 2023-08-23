@@ -3,6 +3,7 @@
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -34,5 +35,7 @@ Route::get('admin/dashboard', [DashboardController::class, 'dashboard'])->name('
 Route::resource('categories', CategoryController::class);
 Route::post('categories/{category_id}/active-deactive',
     [CategoryController::class, 'activeDeActiveCategory'])->name('category.active-deactive');
+
+Route::resource('users', UserController::class);
 
 require __DIR__.'/auth.php';

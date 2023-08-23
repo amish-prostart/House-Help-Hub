@@ -15,7 +15,7 @@
                 <div class="mb-3">
                     <label class="form-label">Status</label>
                     <label class="switch">
-                        <input type="checkbox" name="status" value="1">
+                        <input type="checkbox" name="status" value="1" checked>
                         <span class="slider round"></span>
                     </label>
 

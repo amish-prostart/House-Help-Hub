@@ -7,6 +7,7 @@
             </div>
             <form id="categoryEditForm" name="categoryForm" class="form-horizontal">
             <div class="modal-body">
+                <div class="alert alert-danger d-none hide" id="editValidationErrorsBox"></div>
                 <input type="hidden" class="form-control" name="id"  id="editCategoryID">
                 <div class="mb-3">
                     <label class="form-label">Name</label>
@@ -24,7 +25,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary ms-auto" data-bs-dismiss="modal" id="editCategoryBtn">Save</button>
+                <button type="button" class="btn btn-primary ms-auto" id="editCategoryBtn">Save</button>
             </div>
             </form>
         </div>

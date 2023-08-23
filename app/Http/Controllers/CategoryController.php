@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateCategoryRequest;
+use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
 use App\Repositories\CategoryRepository;
 use Illuminate\Http\Request;
@@ -86,15 +87,15 @@ class CategoryController extends AppBaseController
      * @param  Category  $category
      * @param  UpdateCategoryRequest  $request
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function update(Category $category, UpdateCategoryRequest $request)
     {
         $input = $request->all();
-        $input['is_active'] = ! isset($input['is_active']) ? false : true;
+        $input['status'] = ! isset($input['status']) ? false : true;
         $this->categoryRepository->update($input, $category->id);
 
-        return $this->sendSuccess(__('messages.flash.medicine_category_retrieved'));
+        return $this->sendSuccess('Category updated succecssfully.');
     }
 
     /**

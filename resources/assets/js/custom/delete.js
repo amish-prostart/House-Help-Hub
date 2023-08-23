@@ -4,7 +4,7 @@ window.deleteItem = function (
     url, tableId = null, header, callFunction = null) {
     swal({
         title: 'Delete!',
-        text: 'Are you sure you want to delete this?',
+        text: 'Are you sure you want to delete this '+ header + '?',
         icon: sweetAlertIcon,
         buttons: {
             confirm: 'Yes, Delete',
@@ -12,8 +12,8 @@ window.deleteItem = function (
         },
     }).then((result) => {
         if (result) {
-            Livewire.emit('resetPage')
-            deleteItemAjax(url, tableId = null, header, callFunction = null)
+            // $(tableId).DataTable().ajax.reload();
+            deleteItemAjax(url, tableId, header, callFunction = null)
         }
     });
 };
@@ -25,7 +25,7 @@ function deleteItemAjax (url, tableId = null, header, callFunction = null) {
         dataType: 'json',
         success: function (obj) {
             if (obj.success) {
-                Livewire.emit('resetPage')
+                $(tableId).DataTable().ajax.reload();
             }
             swal({
                 icon: 'success',

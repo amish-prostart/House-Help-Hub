@@ -20,7 +20,7 @@
     <link href="https://cdn.datatables.net/1.11.4/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css"
           href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-{{--    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>--}}
+    <link href="{{mix('assets/css/admin-custom.css')}}" rel="stylesheet" type="text/css">
     @yield('css')
     <style>
         @import url('https://rsms.me/inter/inter.css');
@@ -76,6 +76,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <!-- Tabler Core -->
+<script>
+    let sweetAlertIcon = "{{ asset('assets/images/remove.png') }}";
+</script>
 <script src="{{ asset('dist/js/tabler.min.js') }}" defer></script>
 <script src="{{ asset('dist/js/demo.min.js') }}" defer></script>
 <script src="{{ mix('assets/js/custom/helpers.js') }}"></script>

@@ -1,14 +1,14 @@
 @extends('layouts.app')
 @section('title')
-    Categories
+    Users
 @endsection
 @section('content')
     <div class="row row-cards">
         <div class="col-12">
             <div class="card">
                 <div class="card-header d-flex">
-                    <h3 class="card-title">Categories</h3>
-                    <a href="#" class="btn ms-auto add-button" data-bs-toggle="modal" data-bs-target="#categoryCreateModal">
+                    <h3 class="card-title">Users</h3>
+                    <a href="{{route('users.create')}}" class="btn ms-auto add-button">
                         Add
                     </a>
                 </div>
@@ -29,9 +29,7 @@
             </div>
         </div>
     </div>
-    @include('categories.create_modal')
-    @include('categories.edit_modal')
 @endsection
 @section('js')
-    <script src="{{ mix('assets/js/category/category.js') }}"></script>
+{{--    <script src="{{ mix('assets/js/category/category.js') }}"></script>--}}
 @endsection
