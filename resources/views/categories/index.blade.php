@@ -17,6 +17,7 @@
                         <thead>
                         <tr>
                             <th>#</th>
+                            <th>Image</th>
                             <th>Name</th>
                             <th>Status</th>
                             <th>Action</th>
@@ -33,5 +34,5 @@
     @include('categories.edit_modal')
 @endsection
 @section('js')
-    <script src="{{ mix('assets/js/category/category.js') }}"></script>
+    <script src="{{ mix('assets/js/category/review.js') }}"></script>
 @endsection

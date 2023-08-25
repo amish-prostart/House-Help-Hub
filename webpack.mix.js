@@ -87,12 +87,26 @@ mix.js('resources/assets/js/custom/custom.js',
     'public/assets/js/custom/delete.js').
     js('resources/assets/js/category/category.js',
     'public/assets/js/category/category.js').
+    js('resources/assets/js/custom/add-edit-profile-picture.js',
+    'public/assets/js/custom/add-edit-profile-picture.js').
+    js('resources/assets/js/user/user.js',
+    'public/assets/js/user/user.js').
+    js('resources/assets/js/user/create-edit.js',
+    'public/assets/js/user/create-edit.js').
+    js('resources/assets/js/booking/booking.js',
+    'public/assets/js/booking/booking.js').
+    js('resources/assets/js/review/review.js',
+    'public/assets/js/review/review.js').
 version();
 
 //front custom css
 
-mix.sass('resources/assets/scss/admin-custom.scss',
-    'public/assets/css/admin-custom.css').version()
+mix.
+sass('resources/assets/scss/admin-custom.scss',
+    'public/assets/css/admin-custom.css').
+sass('resources/assets/scss/front-custom.scss',
+    'public/assets/css/front-custom.css').
+version()
 // mix.sass('resources/assets/front/scss/layout.scss',
 //     'public/landing_front/css/layout.css').version()
 // mix.sass('resources/assets/front/scss/home.scss',

@@ -6,11 +6,22 @@ use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UpdateUserProfileRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Models\Category;
 use App\Models\Department;
 use App\Models\DoctorDepartment;
 use App\Models\User;
 use App\Repositories\UserRepository;
+use Carbon\Carbon;
+use Exception;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Laracasts\Flash\Flash;
+use Spatie\Permission\Models\Role;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Yajra\DataTables\DataTables;
 
 class UserController extends AppBaseController
 {
@@ -89,18 +100,29 @@ class UserController extends AppBaseController
     /**
      * @param  Request  $request
      *
+     * @return \Illuminate\Http\JsonResponse
      * @throws Exception
      *
-     * @return Application|Factory|View
      */
     public function index(Request $request)
     {
+        if ($request->ajax()) {
+            return Datatables::of(User::all())
+                ->addIndexColumn()
+                ->addColumn('action','users.action')
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+
         return view('users.index');
     }
 
     public function create()
     {
-        return view('users.create');
+        $categories = Category::where('status',1)->pluck('name','id');
+        $roles = User::ROLES;
+
+        return view('users.create',compact('categories','roles'));
     }
 
     /**
@@ -108,17 +130,18 @@ class UserController extends AppBaseController
      *
      * @param  CreateUSerRequest  $request
      *
-     * @return RedirectResponse|Redirector
+     * @return Application|\Illuminate\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      * @throws Throwable
      */
-    public function store(CreateUserRequest $request)
+    public function store(Request $request)
     {
         try {
             DB::beginTransaction();
             $input = $request->all();
             $input['status'] = isset($input['status']) ? 1 : 0;
+            $input['is_active'] = isset($input['is_active']) ? 1 : 0;
             $this->userRepository->store($input);
-            Flash::success( __('messages.flash.user_saved'));
+            Flash::success('User added successfully.');
             DB::commit();
 
             return redirect(route('users.index'));
@@ -133,11 +156,11 @@ class UserController extends AppBaseController
      * @param $user
      * @return Application|Factory|View
      */
-    public function show($user)
+    public function show(User $user)
     {
-        $userData = $this->userRepository->getUserData($user);
+        $user = $user->load('category');
 
-        return view('users.show', compact('userData'));
+        return view('users.show', compact('user'));
     }
 
     /**
@@ -145,14 +168,14 @@ class UserController extends AppBaseController
      *
      * @param  User  $user
      *
-     * @return Application|Factory|View
+     * @return Application|Factory|View|\Illuminate\Foundation\Application
      */
     public function edit(User $user)
     {
-        $role = Department::pluck('name', 'id')->all();
-        $isEdit = true;
+        $categories = Category::where('status',1)->pluck('name','id');
+        $roles = User::ROLES;
 
-        return view('users.edit', compact('isEdit', 'user', 'role'));
+        return view('users.edit', compact( 'user','categories','roles'));
     }
 
     /**
@@ -163,14 +186,13 @@ class UserController extends AppBaseController
      * @param  User  $user
      * @return Application|RedirectResponse|Redirector
      */
-    public function update(UpdateUserRequest $request, User $user)
+    public function update(Request $request, User $user)
     {
         $input = $request->all();
         $input['status'] = isset($input['status']) ? 1 : 0;
-        $input['dob'] = (! empty($input['dob'])) ? $input['dob'] : null;
-        $input['phone'] = preparePhoneNumber($input, 'phone');
-        $this->userRepository->updateUser($input, $user->id);
-        Flash::success( __('messages.flash.user_updated'));
+        $input['is_active'] = isset($input['is_active']) ? 1 : 0;
+        $this->userRepository->updateUser($input, $user);
+        Flash::success('User updated successfully.');
 
         return redirect(route('users.index'));
     }
@@ -179,135 +201,63 @@ class UserController extends AppBaseController
      * Remove the specified resource from storage.
      *
      * @param  User  $user
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(User $user)
     {
-        $checkAdmin = User::whereId($user->id)->where('is_admin_default', 1)->exists();
-        if ($checkAdmin) {
+        if ($user->id === 1) {
             return $this->sendError('Default Admin can\'t be deleted.');
         }
 
         $this->userRepository->deleteUser($user->id);
 
-        return $this->sendSuccess(__('messages.flash.user_deleted'));
+        return $this->sendSuccess('User deleted successfully.');
     }
 
     /**
      * @param int $id
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function activeDeactiveStatus($id)
+    public function activeDeactiveUserStatus($id)
     {
-        $hospital = User::findOrFail($id);
-        $status = !$hospital->status;
-        User::where('tenant_id', $hospital->tenant_id)->update(['status' => $status]);
+        $category = User::findOrFail($id);
+        $category->status = ! $category->status;
+        $category->save();
 
-        return $this->sendSuccess( __('messages.common.status_updated_successfully'));
+        return $this->sendSuccess('User updated successfully.');
     }
 
     /**
      * @param $id
      *
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function activeDeactiveUserStatus($id)
+    public function activeDeactiveStatus($id)
     {
         $user = User::findOrFail($id);
 
-        if ($user->status == User::INACTIVE) {
-            $user->update(['status' => User::ACTIVE]);
+        if ($user->is_active == User::INACTIVE) {
+            $user->update(['is_active' => User::ACTIVE]);
         } else {
-            $user->update(['status' => User::INACTIVE]);
+            $user->update(['is_active' => User::INACTIVE]);
         }
 
-        return $this->sendSuccess(__('messages.common.status_updated_successfully'));
-    }
-
-    /**
-     * @param $user
-     * @return Application|Factory|View
-     */
-    public function showModal($user)
-    {
-        $users = $this->userRepository->getUserData($user);
-
-        return $this->sendResponse($users, __('messages.flash.user_retrieved'));
-    }
-
-    /**
-     * @param  \Illuminate\Http\Request  $request
-     *
-     * @throws \Exception
-     * @return void
-     */
-    public function hospitalIndex(Request $request)
-    {
-
+        return $this->sendSuccess('User updated successfully.');
     }
 
     /**
      * @param  int  $id
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function isVerified($id)
     {
         $user = User::findOrFail($id);
-        $emailVerified = $user->email_verified_at == null ? Carbon::now() : null;
-        $user->update(['email_verified_at' => $emailVerified]);
+        $user->email_verified_at = $user->email_verified_at == null ? Carbon::now() : $user->email_verified_at;
+        $user->save();
 
-        return $this->sendSuccess( __('messages.flash.email_verified'));
-    }
-
-    /**
-     * @param User $user
-     *
-     * @return Application|RedirectResponse|Redirector
-     */
-    public function userImpersonateLogin(User $user)
-    {
-        Auth::user()->impersonate($user);
-        $url = redirectToDashboard();
-
-        return redirect(url($url));
-    }
-
-    /**
-     * @return Application|RedirectResponse|Redirector
-     */
-    public function userImpersonateLogout()
-    {
-        Auth::user()->leaveImpersonation();
-
-        return redirect(url('super-admin/dashboard'));
-    }
-
-    public function changeThemeMode()
-    {
-        $user = User::find(getLoggedInUser()->id);
-
-        if($user->theme_mode == User::LIGHT_MODE)
-        {
-            $user['theme_mode'] = User::DARK_MODE;
-        }
-        else{
-            $user['theme_mode'] = User::LIGHT_MODE;
-        }
-
-        $user->update();
-
-        return redirect(URL::previous());
-    }
-    /**
-     * @param User $user
-     *
-     * @return Application|RedirectResponse|Redirector
-     */
-    public function impersonate(User $user){
-        getLoggedInUser()->impersonate($user);
-        return redirect(route('dashboard'));
+        return $this->sendSuccess('User Email verified successfully.');
     }
 }

@@ -13,12 +13,15 @@
                     </a>
                 </div>
                 <div class="table-responsive">
-                    <table class="table card-table table-vcenter text-nowrap datatable category-datatable">
+                    <table class="table card-table table-vcenter text-nowrap datatable user-datatable">
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>Name</th>
+                            <th>User</th>
+                            <th>Role</th>
                             <th>Status</th>
+                            <th>Active</th>
+                            <th>Email Verified</th>
                             <th>Action</th>
                         </tr>
                         </thead>
@@ -31,5 +34,5 @@
     </div>
 @endsection
 @section('js')
-{{--    <script src="{{ mix('assets/js/category/category.js') }}"></script>--}}
+    <script src="{{ mix('assets/js/user/user.js') }}"></script>
 @endsection

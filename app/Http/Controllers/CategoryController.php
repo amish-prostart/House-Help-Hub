@@ -42,31 +42,19 @@ class CategoryController extends AppBaseController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(CreateCategoryRequest $request)
+    public function store(Request $request)
     {
         $input = $request->all();
         $input['status'] = ! isset($input['status']) ? false : true;
-        $this->categoryRepository->create($input);
+        $category = $this->categoryRepository->create($input);
+
+        if (isset($input['image']) && ! empty($input['image'])) {
+            $fileExtension = getFileName('Category', $input['image']);
+            $category->addMedia($input['image'])->usingFileName($fileExtension)->toMediaCollection(Category::COLLECTION_CATEGORY_PICTURES,
+                config('app.media_disc'));
+        }
 
         return response()->json(['success' => 'Category saved successfully.']);
-    }
-
-    /**
-     * @param  int  $id
-     *
-     * @return Application|Factory|RedirectResponse|Redirector|View
-     */
-    public function show($id)
-    {
-        $category = Category::find($id);
-        if (empty($category)) {
-            Flash::error(__('messages.flash.medicine_category_not_found'));
-
-            return redirect(route('categories.index'));
-        }
-        $medicines = $category->medicines;
-
-        return view('categories.show', compact('medicines', 'category'));
     }
 
     /**
@@ -89,11 +77,18 @@ class CategoryController extends AppBaseController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Category $category, UpdateCategoryRequest $request)
+    public function update(Category $category, Request $request)
     {
         $input = $request->all();
         $input['status'] = ! isset($input['status']) ? false : true;
-        $this->categoryRepository->update($input, $category->id);
+        $category = $this->categoryRepository->update($input, $category->id);
+
+        if (isset($input['image']) && !empty($input['image'])) {
+            $category->clearMediaCollection(Category::COLLECTION_CATEGORY_PICTURES);
+            $fileExtension = getFileName('Category', $input['image']);
+            $category->addMedia($input['image'])->usingFileName($fileExtension)->toMediaCollection(Category::COLLECTION_CATEGORY_PICTURES,
+                config('app.media_disc'));
+        }
 
         return $this->sendSuccess('Category updated succecssfully.');
     }

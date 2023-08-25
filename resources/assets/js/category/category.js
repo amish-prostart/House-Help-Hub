@@ -5,6 +5,15 @@ $(document).ready(function () {
         ajax: route('categories.index'),
         columns: [
             {data: 'id', name: 'id'},
+            {data: function (row) {
+                    return `<div class="d-flex align-items-center">
+    <a href="javascript:void(0)" data-id="${row.id}" class="show-btn">
+        <div class="image image-mini me-3">
+            <img src="${row.category_url}" alt="user" class="user-img image rounded-circle object-contain user-profile-image">
+        </div>
+    </a>
+</div>`;
+                }, name: 'id'},
             {data: 'name', name: 'name'},
             {data: function (row) {
                     let checked = row.status === 1 ? 'checked' : '';
@@ -18,26 +27,20 @@ $(document).ready(function () {
         order: [[0, 'desc']]
     });
 
-    // Show category modal for creating/editing
-    // $('#categoryCreateForm').on('click', function () {
-    //     $('#categoryId').val('');
-    //     $('#name').val('');
-    //     $('#status').val(1);
-    //     $('#categoryModal').modal('show');
-    // });
-
-    // Save category using AJAX
-    $('#addCategoryBtn').on('click', function (e) {
+    $('#categoryCreateForm').submit(function(e) {
         e.preventDefault();
+        let formData = new FormData(this);
 
         $.ajax({
-            data: $('#categoryCreateForm').serialize(),
+            data: formData,
             url: route('categories.store'),
             type: "POST",
-            dataType: 'json',
+            contentType: false,
+            processData: false,
             success: function (data) {
                 $('#categoryCreateForm').trigger("reset");
                 $('#categoryCreateModal').modal('hide');
+                $(".modal-backdrop").remove();
                 toastr.success('Category saved Successfully.');
                 table.draw();
             },
@@ -46,58 +49,6 @@ $(document).ready(function () {
             }
         });
     });
-
-    // Edit category
-    $('#categoryTableBody').on('click', '.edit-category', function () {
-        var categoryId = $(this).data('id');
-
-        $.ajax({
-            url: '/categories/' + categoryId + '/edit',
-            type: 'GET',
-            success: function (response) {
-                $('#categoryId').val(response.category.id);
-                $('#name').val(response.category.name);
-                $('#status').val(response.category.status);
-                $('#categoryModal').modal('show');
-            },
-        });
-    });
-
-    // Delete category
-    // $(document).on('click', '#categoryDeleteBtn', function (e) {
-    //     e.preventDefault();
-    //     var categoryId = $(this).data('id');
-    //     swal({
-    //         title: "Do you want to delete this User?",
-    //         type: "warning",
-    //         showCancelButton: true,
-    //         confirmButtonClass: "btn",
-    //         confirmButtonText: "Confirm",
-    //         cancelButtonText: "Cancel",
-    //         closeOnConfirm: true,
-    //         closeOnCancel: true,
-    //         timer: 5000
-    //     }).then(function (e) {
-    //         $.ajax({
-    //             type: 'DELETE',
-    //             url: route('categories.destroy',categoryId),
-    //             dataType: 'JSON',
-    //             success: function (results) {
-    //                 if (results.success === true) {
-    //                     swal("Done!", results.message, "success");
-    //                     // refresh page after 2 seconds
-    //                     setTimeout(function(){
-    //                         location.reload();
-    //                     },2000);
-    //                 } else {
-    //                     swal.fire("Error!", results.message, "error");
-    //                 }
-    //             }
-    //         });
-    //     }, function (dismiss) {
-    //         return false;
-    //     })
-    // });
 
     // category activation deactivation change event
     listenChange('.category-status', function (event) {
@@ -132,12 +83,14 @@ $(document).ready(function () {
             success: function (result) {
                 if (result.success) {
                     let category = result.data
+                    console.log(category.category_url)
                     $('#editCategoryID').val(category.id)
                     $('#editCategoryName').val(category.name)
                     if (category.status === 1)
                         $('#editCategoryStatus').prop('checked', true)
                     else
                         $('#editCategoryStatus').prop('checked', false)
+                    $('.category-edit-image').css('background-image', 'url("' + category.category_url + '")');
                     $('#categoryEditModal').modal('show')
 
                 }
@@ -148,14 +101,19 @@ $(document).ready(function () {
         })
     }
 
-    $('#editCategoryBtn').on('click', function (e) {
+    $('#categoryEditForm').submit(function(e) {
         e.preventDefault();
-        $(this).addClass('disabled');
+        let formData = new FormData(this);
+        // console.log(formData)
+        // return false;
+        $('#editCategoryBtn').addClass('disabled');
         var id = $('#editCategoryID').val()
         $.ajax({
             url: route('categories.update',id),
-            type: 'put',
-            data: $('#categoryEditForm').serialize(),
+            type: 'post',
+            data: formData,
+            contentType: false,
+            processData: false,
             success: function (result) {
                 if (result.success) {
                     $('#editCategoryBtn').removeClass('disabled');
@@ -175,5 +133,19 @@ $(document).ready(function () {
         deleteItem(route('categories.destroy',categoryId),
             '.category-datatable',
             'Category')
+    })
+
+    listen('change', '#categoryImage', function () {
+        console.log('image change');
+        let extension = isValidDocument($(this), '#categoryValidationErrorsBox')
+        console.log(extension);
+        if (!isEmpty(extension) && extension != false) {
+            $('#userValidationErrorsBox').html('').hide()
+            displayDocument(this, '.category-edit-image', extension)
+        }
+    })
+
+    listenClick('.remove-image', function () {
+        defaultImagePreview('#userPreviewImage', 1)
     })
 });
