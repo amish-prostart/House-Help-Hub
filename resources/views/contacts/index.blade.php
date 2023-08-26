@@ -1,26 +1,23 @@
 @extends('layouts.app')
 @section('title')
-    Categories
+    Contacts
 @endsection
 @section('content')
     <div class="row row-cards">
         <div class="col-12">
             <div class="card">
                 <div class="card-header d-flex">
-                    <h3 class="card-title">Categories</h3>
-                    <a href="#" class="btn ms-auto add-button" data-bs-toggle="modal" data-bs-target="#categoryCreateModal">
-                        Add
-                    </a>
+                    <h3 class="card-title">Contacts</h3>
                 </div>
                 <div class="table-responsive">
-                    <table class="table card-table table-vcenter text-nowrap datatable category-datatable">
+                    <table class="table card-table table-vcenter text-nowrap datatable contact-datatable">
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th>Image</th>
                             <th>Name</th>
-                            <th>Status</th>
-                            <th>Action</th>
+                            <th>Email</th>
+                            <th>Subject</th>
+                            <th>Message</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -30,9 +27,7 @@
             </div>
         </div>
     </div>
-    @include('categories.create_modal')
-    @include('categories.edit_modal')
 @endsection
 @section('js')
-    <script src="{{ mix('assets/js/category/category.js') }}"></script>
+    <script src="{{ mix('assets/js/contact/contact.js') }}"></script>
 @endsection

@@ -117,6 +117,72 @@ function getAppName()
     return $appName;
 }
 
+function getPhone()
+{
+    static $phone;
+
+    if (empty($phone)) {
+        $phone = Setting::where('key', '=', 'phone')->first()->value;
+    }
+
+    return '+91 '. $phone;
+}
+
+function getEmail()
+{
+    static $getEmail;
+
+    if (empty($getEmail)) {
+        $getEmail = Setting::where('key', '=', 'email')->first()->value;
+    }
+
+    return $getEmail;
+}
+
+function getAddress()
+{
+    static $getAddress;
+
+    if (empty($getAddress)) {
+        $getAddress = Setting::where('key', '=', 'address')->first()->value;
+    }
+
+    return $getAddress;
+}
+
+function getCity()
+{
+    static $getCity;
+
+    if (empty($getCity)) {
+        $getCity = Setting::where('key', '=', 'city')->first()->value;
+    }
+
+    return $getCity;
+}
+
+function getState()
+{
+    static $getState;
+
+    if (empty($getState)) {
+        $getState = Setting::where('key', '=', 'state')->first()->value;
+    }
+
+    return $getState;
+}
+
+function getCountry()
+{
+    static $getCountry;
+
+    if (empty($getCountry)) {
+        $getCountry = Setting::where('key', '=', 'country')->first()->value;
+    }
+
+    return $getCountry;
+}
+
 /**
  * @param array $models
  * @param string $columnName
@@ -156,18 +222,6 @@ function getSettingValue()
     return Setting::all()->keyBy('key');
 }
 
-/**
- * @param $type
- *
- * @param $key
- *
- * @return mixed
- */
-function getFrontSettingValue($type, $key)
-{
-    return FrontSetting::whereType($type)->where('key', $key)->value('value');
-}
-
 function setStripeApiKey($tenantId)
 {
     $stripeKey = Setting::whereTenantId($tenantId)->where('key', '=', 'stripe_secret')->first();
@@ -192,101 +246,6 @@ function getFileName($fileName, $attachment)
 }
 
 /**
- * @param array $data
- */
-function addNotification($data)
-{
-    $notificationRecord = [
-        'type'             => $data[0],
-        'user_id'          => $data[1],
-        'notification_for' => $data[2],
-        'title'            => $data[3],
-    ];
-
-    if ($user = User::find($data[1])) {
-        Notification::create($notificationRecord);
-    }
-}
-
-/**
- * @param array $role
- *
- * @return Notification[]|Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Query\Builder[]|Collection
- */
-function getNotification($role)
-{
-    return Notification::whereUserId(Auth::id())->whereNotificationFor(Notification::NOTIFICATION_FOR[$role])->where('read_at',
-        null)->orderByDesc('created_at')->toBase()->get();
-}
-
-/**
- * @param array $data
- *
- * @return array
- */
-function getAllNotificationUser($data)
-{
-    return array_filter($data, function ($key) {
-        return $key != getLoggedInUserId();
-    }, ARRAY_FILTER_USE_KEY);
-}
-
-/**
- * @param array $notificationFor
- *
- * @return string
- */
-function getNotificationIcon($notificationFor)
-{
-    switch ($notificationFor) {
-        case 1:
-            return 'fas fa-calendar-check';
-        case 2:
-            return 'fas fa-file-invoice';
-        case 3:
-            return 'fa fa-rupee-sign';
-        case 7:
-        case 4:
-            return 'fas fa-notes-medical';
-        case 5:
-            return 'fas fa-stethoscope';
-        case 8:
-        case 6:
-            return 'fas fa-prescription';
-        case 9:
-            return 'fas fa-diagnoses';
-        case 10:
-            return 'fas fa-chart-pie';
-        case 11:
-            return 'fas fa-money-bill-wave';
-        case 12:
-            return 'fas fa-user-injured';
-        case 13:
-            return 'fa fa-briefcase-medical';
-        case 14:
-            return 'fa fa-users';
-        case 15:
-            return 'fa fa-clipboard';
-        case 16:
-            return 'fas fa-user-plus';
-        case 17:
-            return 'fas fa-ambulance';
-        case 18:
-            return 'fas fa-box';
-        case 19:
-            return 'fas fa-wallet';
-        case 20:
-            return 'fas fa-money-check';
-        case 21:
-            return 'fa fa-video';
-        case 22:
-            return 'fa fa-file-video';
-        default:
-            return 'fa fa-inbox';
-    }
-}
-
-/**
  * @param $model
  *
  * @param $mediaCollection
@@ -299,22 +258,12 @@ function removeFile($model, $mediaCollection)
 function redirectToDashboard(): string
 {
     $user = Auth::user();
-    if ($user->hasRole('Super Admin')) {
-        return 'super-admin/dashboard';
-    } else {
-        if ($user->hasRole('Admin')) {
-            return 'dashboard';
-        } elseif ($user->hasRole(['Receptionist'])) {
-            $module = Module::whereNotIn('name',
-                Module::Receptionist)->whereIsActive(1)->whereTenantId(getLoggedInUser()->tenant_id)->first();
-            if ($module) {
-                return route($module->route);
-            }
 
-            return 'appointments';
-        }  else {
-            return 'employee/notice-board';
-        }
+    if ($user->role === 'Admin') {
+        return 'admin/dashboard';
+    }
+    else {
+        return '/';
     }
 }
 

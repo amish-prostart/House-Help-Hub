@@ -104,9 +104,7 @@ class UserRepository extends BaseRepository
         try {
             $input['password'] = Hash::make($input['password']);
             $input['category_id'] = ($input['role'] === 'Provider') ? $input['category_id'] : null;
-            $input['old_price'] = ($input['role'] === 'Provider') ? $input['old_price'] : null;
-            $input['new_price'] = ($input['role'] === 'Provider') ? $input['new_price'] : null;
-            $input['work_description'] = ($input['role'] === 'Provider') ? $input['work_description'] : null;
+            $input['visit_charge'] = ($input['role'] === 'Provider') ? $input['visit_charge'] : null;
 
             $user = User::create($input);
 
@@ -117,7 +115,7 @@ class UserRepository extends BaseRepository
             }
             
 //            $user->sendEmailVerificationNotification();
-;
+
         } catch (Exception $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         }
@@ -138,9 +136,7 @@ class UserRepository extends BaseRepository
              * @var User $user
              */
             $input['category_id'] = ($input['role'] === 'Provider') ? $input['category_id'] : null;
-            $input['old_price'] = ($input['role'] === 'Provider') ? $input['old_price'] : null;
-            $input['new_price'] = ($input['role'] === 'Provider') ? $input['new_price'] : null;
-            $input['work_description'] = ($input['role'] === 'Provider') ? $input['work_description'] : null;
+            $input['visit_charge'] = ($input['role'] === 'Provider') ? $input['visit_charge'] : null;
 
             $user = $this->update($input, $user->id);
             if (isset($input['image']) && !empty($input['image'])) {

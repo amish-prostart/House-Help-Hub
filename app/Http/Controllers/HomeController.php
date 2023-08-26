@@ -39,4 +39,14 @@ class HomeController extends AppBaseController
 
         return view('front.services-details',compact('user','category','relatedHelpers','bookingTimes'));
     }
+
+    public function frontUserProfile()
+    {
+        return view('front.my-account');
+    }
+
+    public function contactUs()
+    {
+        return view('front.contact-us');
+    }
 }

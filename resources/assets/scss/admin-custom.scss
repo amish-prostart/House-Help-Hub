@@ -166,3 +166,16 @@ input {
   width: 100px;
   object-fit: cover;
 }
+
+.sidebar-title {
+  display: inline;
+  color: white;
+}
+
+.profile-header {
+  margin-left: auto;
+}
+
+.active-sidebar {
+  color: #0d6efd !important;
+}

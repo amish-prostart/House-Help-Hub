@@ -37,7 +37,7 @@
                                     <div class="content">
                                         <h3 class="title">{{ $user->full_name }}</h3>
                                         <h3 class="price mt-5">
-                                            <span class="new ms-0">Visit Charge: ₹{{$user->new_price}}</span>
+                                            <span class="new ms-0">Visit Charge: ₹{{$user->visit_charge}}</span>
                                         </h3>
                                         <form action="#" method="post" id="categoryDetailForm">
                                             @csrf
@@ -142,7 +142,7 @@ AMC Available</a></span>
                                             <div class="content">
                                                 <h4 class="title"><a href="{{route('front.services-detail',[$helper->category->name,$helper->id])}}">{{ $helper->full_name }}</a></h4>
                                                 <span class="posted-in">Category: <a href="#">{{$helper->category->name}}</a></span>
-                                                <h4 class="price"><span class="old">₹{{$helper->old_price}}</span><span class="new">₹{{$helper->new_price}}</span></h4>
+                                                <h4 class="price"><span class="new">₹{{$helper->visit_charge}}</span></h4>
                                             </div>
                                         </div>
                                     </div>

@@ -28,24 +28,23 @@
                             <h2>Login</h2>
                         </div>
                         <div class="login-form">
-                            <form action="#">
+                            @include('flash::message')
+                            <form action="{{ route('login.store') }}" method="post">
+                                @csrf
                                 <div class="form-fild">
-                                    <p><label>Username or email address <span class="required">*</span></label></p>
-                                    <input name="username" value="" type="text">
+                                    <p><label>Email address <span class="required">*</span></label></p>
+                                    <input name="email" type="email">
                                 </div>
                                 <div class="form-fild">
                                     <p><label>Password <span class="required">*</span></label></p>
-                                    <input name="password" value="" type="password">
+                                    <input name="password" type="password">
                                 </div>
                                 <div class="login-submit">
                                     <button type="submit" class="btn">Login</button>
                                     <label>
-                                        <input class="checkbox" name="rememberme" value="" type="checkbox">
+                                        <input class="checkbox" name="remember" value="1" type="checkbox">
                                         <span>Remember me</span>
                                     </label>
-                                </div>
-                                <div class="lost-password">
-                                    <a href="#">Lost your password?</a>
                                 </div>
                             </form>
                         </div>

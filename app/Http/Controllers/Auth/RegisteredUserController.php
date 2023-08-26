@@ -19,12 +19,23 @@ class RegisteredUserController extends Controller
     /**
      * Display the registration view.
      */
-    public function create(): View
+    public function createCustomer(): View
     {
         $categories = Category::where('status',1)->pluck('name','id');
         $roles = User::FRONT_ROLES;
 
         return view('front.auth.customer_register',compact('categories','roles'));
+    }
+
+    /**
+     * Display the registration view.
+     */
+    public function createProvider(): View
+    {
+        $categories = Category::where('status',1)->pluck('name','id');
+        $roles = User::FRONT_ROLES;
+
+        return view('front.auth.worker_register',compact('categories','roles'));
     }
 
     /**

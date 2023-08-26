@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email')->unique();
+            $table->string('password');
             $table->bigInteger('category_id')->unsigned()->nullable();
             $table->string('role');
             $table->string('phone');
@@ -24,13 +25,10 @@ return new class extends Migration
             $table->string('city');
             $table->string('state');
             $table->string('country');
+            $table->string('visit_charge')->nullable();
             $table->boolean('is_active');
             $table->boolean('status');
-            $table->string('old_price')->nullable();
-            $table->string('new_price')->nullable();
-            $table->text('work_description')->nullable();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
             $table->rememberToken();
             $table->timestamps();
 

@@ -39,9 +39,7 @@ class User extends Authenticatable implements HasMedia, MustVerifyEmail
         'country',
         'is_active',
         'status',
-        'old_price',
-        'new_price',
-        'work_description',
+        'visit_charge',
     ];
 
     /**

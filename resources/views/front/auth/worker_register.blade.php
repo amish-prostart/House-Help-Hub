@@ -1,6 +1,6 @@
 @extends('front.layouts.app')
 @section('title')
-    Login
+    Register
 @endsection
 @section('content')
     <!-- Breadcrumb Section Start -->
@@ -9,13 +9,14 @@
             <div class="row align-items-center">
                 <div class="col-md-12">
                     <div class="breadcrumb-title">
-                        <h2>Register</h2>
+                        <h2>Provider/Worker Register</h2>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     <!-- Breadcrumb Section End -->
+
 
     <!--My Account section start-->
     <div class="my-account section pt-100 pt-lg-80 pt-md-70 pt-sm-60 pt-xs-50  pb-70 pb-lg-50 pb-md-40 pb-sm-30 pb-xs-20">
@@ -25,25 +26,16 @@
                 <div class="col-md-12">
                     <div class="customer-login-register">
                         <div class="form-login-title">
-                            <h2>Registration</h2>
+                            <h2>Provider/Worker Registration</h2>
                         </div>
+                        @include('flash::message')
                         <div class="login-form">
-                            <form action="#">
-                                <div class="form-fild">
-                                    <p><label>Username or email address <span class="required">*</span></label></p>
-                                    <input name="username" value="" type="text">
-                                </div>
-                                <div class="form-fild">
-                                    <p><label>Password <span class="required">*</span></label></p>
-                                    <input name="password" value="" type="password">
-                                </div>
-                                <div class="login-submit">
-                                    <button type="submit" class="btn">Login</button>
-                                </div>
-                                <div class="lost-password">
-                                    Already have an Account? <a href="{{route('login')}}">Click Here</a>
-                                </div>
-
+                            <form method="post" action="{{ route('users.store') }}" enctype="multipart/form-data" id="userCreateForm">
+                                @csrf
+                                <input type="hidden" name="role" value="Provider">
+                                <input type="hidden" name="front_side" value="front-site">
+                                <input type="hidden" name="status" value="1">
+                                <input type="hidden" name="is_active" value="1">
                                 <div class="card-body">
                                     <div class="row row-cards">
                                         <div class="col-sm-6 col-md-6">
@@ -102,16 +94,6 @@
                                         </div>
                                         <div class="col-sm-6 col-md-6">
                                             <div class="mb-3">
-                                                <label class="form-label">Role:<span class="required"></span></label>
-                                                <select class="form-select" id="userRole" name="role" required>
-                                                    @foreach($roles as $role)
-                                                        <option value="{{$role}}">{{ $role }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 provider-category-block d-none">
-                                            <div class="mb-3">
                                                 <label class="form-label">Category:<span class="required"></span></label>
                                                 <select class="form-select" name="category_id">
                                                     @foreach($categories as $key => $value)
@@ -120,22 +102,10 @@
                                                 </select>
                                             </div>
                                         </div>
-                                        <div class="col-sm-6 col-md-6 provider-category-block d-none">
+                                        <div class="col-sm-6 col-md-6">
                                             <div class="mb-3">
-                                                <label class="form-label">Old Price:<span class="required"></span></label>
-                                                <input type="text" class="form-control" placeholder="Enter Old Price" name="old_price" value="{{old('old_price')}}">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 provider-category-block d-none">
-                                            <div class="mb-3">
-                                                <label class="form-label">New Price:<span class="required"></span></label>
-                                                <input type="text" class="form-control" placeholder="Enter New Price" name="new_price" value="{{old('new_price')}}">
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6 provider-category-block d-none">
-                                            <div class="mb-3">
-                                                <label class="form-label">Work Description:<span class="required"></span></label>
-                                                <textarea rows="2" class="form-control" placeholder="Enter Work Description" name="work_description">{{ old('work_description') }}</textarea>
+                                                <label class="form-label">Visit Charge:<span class="required"></span></label>
+                                                <input type="text" class="form-control" placeholder="Enter Visit Charge" name="visit_charge" value="{{old('visit_charge')}}">
                                             </div>
                                         </div>
                                         <div class="col-sm-6 col-md-6">
@@ -161,27 +131,6 @@
                                                 <label class="form-label">Country:<span class="required"></span></label>
                                                 <input type="text" class="form-control" placeholder="Enter Country" name="country" value="{{old('country')}}" required>
                                             </div>
-                                        </div>
-                                        <div class="col-sm-6 col-md-6">
-                                            <div class="d-flex">
-                                                <div>
-                                                    <label class="form-label">Status</label>
-                                                    <label class="switch">
-                                                        <input type="checkbox" name="status" value="1" checked>
-                                                        <span class="slider round"></span>
-                                                    </label>
-                                                </div>
-
-                                                <div class="ms-5">
-                                                    <label class="form-label">Active</label>
-                                                    <label class="switch">
-                                                        <input type="checkbox" name="is_active" value="1" checked>
-                                                        <span class="slider round"></span>
-                                                    </label>
-                                                </div>
-
-                                            </div>
-
                                         </div>
                                         <div class="col-sm-6 col-md-6">
                                             <div class="justify-content-center">
@@ -211,7 +160,6 @@
 
                                     </div>
                                     <div class="card-footer text-end">
-                                        <a href="{{route('users.index')}}" class="btn btn-secondary">Cancel</a>
                                         <button type="submit" class="btn btn-primary">Save</button>
                                     </div>
                                 </div>
@@ -228,4 +176,17 @@
     <!--CTA section start-->
     @include('front.get-quick-note')
     <!--CTA section end-->
+@endsection
+@section('front_js')
+    <script>
+        $(document).ready(function (){
+            listen('change', '#userProfileImage', function () {
+                let extension = isValidDocument($(this), '#userValidationErrorsBox')
+                if (!isEmpty(extension) && extension != false) {
+                    $('#userValidationErrorsBox').html('').hide()
+                    displayDocument(this, '#userPreviewImage', extension)
+                }
+            })
+        })
+    </script>
 @endsection

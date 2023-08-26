@@ -97,6 +97,10 @@ mix.js('resources/assets/js/custom/custom.js',
     'public/assets/js/booking/booking.js').
     js('resources/assets/js/review/review.js',
     'public/assets/js/review/review.js').
+    js('resources/assets/js/custom/front-custom.js',
+    'public/assets/js/custom/front-custom.js').
+    js('resources/assets/js/contact/contact.js',
+    'public/assets/js/contact/contact.js').
 version();
 
 //front custom css
