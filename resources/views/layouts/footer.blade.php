@@ -5,7 +5,7 @@
                 <ul class="list-inline list-inline-dots mb-0">
                     <li class="list-inline-item">
                         Copyright &copy; 2023
-                        <a href="." class="link-secondary">Tabler</a>.
+                        <a href="/" class="link-secondary">House Help Hub</a>.
                         All rights reserved.
                     </li>
                 </ul>

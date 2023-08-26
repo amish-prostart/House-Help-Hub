@@ -8,6 +8,7 @@
                 <form class="card" method="post" action="{{ route('users.update',$user->id) }}" enctype="multipart/form-data" id="userEditForm">
                     @csrf
                     @method('put')
+                    <input type="hidden" name="front_side" value="back-site">
                     <span id="userValidationErrorsBox"></span>
                     <div class="card-body">
                         <div class="row row-cards">
@@ -75,20 +76,8 @@
                             </div>
                             <div class="col-sm-6 col-md-6 provider-category-block d-none">
                                 <div class="mb-3">
-                                    <label class="form-label">Old Price:<span class="required"></span></label>
-                                    <input type="text" class="form-control" placeholder="Enter Old Price" name="old_price" value="{{$user->old_price}}">
-                                </div>
-                            </div>
-                            <div class="col-sm-6 col-md-6 provider-category-block d-none">
-                                <div class="mb-3">
-                                    <label class="form-label">New Price:<span class="required"></span></label>
-                                    <input type="text" class="form-control" placeholder="Enter New Price" name="new_price" value="{{$user->new_price}}">
-                                </div>
-                            </div>
-                            <div class="col-sm-6 col-md-6 provider-category-block d-none">
-                                <div class="mb-3">
-                                    <label class="form-label">Work Description:<span class="required"></span></label>
-                                    <textarea rows="2" class="form-control" placeholder="Enter Work Description" name="work_description">{{$user->work_description}}</textarea>
+                                    <label class="form-label">Visit Charge:<span class="required"></span></label>
+                                    <input type="text" class="form-control" placeholder="Enter Visit Charge" name="visit_charge" value="{{$user->visit_charge}}">
                                 </div>
                             </div>
                             <div class="col-sm-6 col-md-6">

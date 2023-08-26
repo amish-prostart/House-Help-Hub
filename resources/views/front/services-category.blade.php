@@ -42,7 +42,7 @@
                                         <div class="content">
                                             <h4 class="title"><a href="{{route('front.services-detail',[$user->category->name,$user->id])}}">{{ $user->full_name }}</a></h4>
                                             <span class="posted-in">Category: <a href="#">{{$user->category->name}}</a></span>
-                                            <h4 class="price mt-2 mb-2"><span class="new">Visit Chagrge: ₹{{$user->new_price}}</span></h4>
+                                            <h4 class="price mt-2 mb-2"><span class="new">Visit Charge: ₹{{$user->visit_charge}}</span></h4>
                                             <a href="{{route('front.services-detail',[$user->category->name,$user->id])}}" class="btn">Book</a>
                                         </div>
                                     </div>

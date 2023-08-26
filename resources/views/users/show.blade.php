@@ -50,16 +50,8 @@
                             <div class="datagrid-content">{{$user->category->name}}</div>
                         </div>
                             <div class="datagrid-item">
-                                <div class="datagrid-title">Old Price:</div>
-                                <div class="datagrid-content">{{$user->old_price}}</div>
-                            </div>
-                            <div class="datagrid-item">
-                                <div class="datagrid-title">New Price:</div>
-                                <div class="datagrid-content">{{$user->new_price}}</div>
-                            </div>
-                            <div class="datagrid-item">
-                                <div class="datagrid-title">Work Description:</div>
-                                <div class="datagrid-content">{{$user->work_description}}</div>
+                                <div class="datagrid-title">Visit Charge:</div>
+                                <div class="datagrid-content">{{$user->visit_charge}}</div>
                             </div>
                         @endif
                         <div class="datagrid-item">

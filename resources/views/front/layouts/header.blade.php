@@ -5,7 +5,8 @@
                 <div class="col-lg-2">
                     <!--Logo Start-->
                     <div class="logo">
-                        <a href="index.html"><img src="{{ asset('front/assets/images/logo.png')}}" alt=""></a>
+                        <a href="/"><img class="front-logo" src="{{ asset( getLogoUrl()) }}" alt=""></a>
+                        <h4>{{getAppName()}}</h4>
                     </div>
                     <!--Logo End-->
                 </div>
@@ -22,8 +23,8 @@
                                                     <i class="fa fa-phone"></i>
                                                 </div>
                                                 <div class="content">
-                                                    <h3>1-775-97-377</h3>
-                                                    <span>info@thememove.com</span>
+                                                    <h3>{{ getPhone() }}</h3>
+                                                    <span>{{ getEmail() }}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -33,8 +34,8 @@
                                                     <i class="fa fa-home"></i>
                                                 </div>
                                                 <div class="content">
-                                                    <h3>14 Tottenham Court Road</h3>
-                                                    <span>London, England.</span>
+                                                    <h3>{{ getAddress() }}</h3>
+                                                    <span>{{ getCity() }}, {{ getState() }},{{ getCountry() }}.</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -56,24 +57,38 @@
                 <div class="col-12 d-flex">
                     <nav class="main-menu">
                         <ul>
-                            <li><a href="index.html">Home</a>
+                            <li><a href="{{route('front.home')}}">Home</a>
                             </li>
-                            <li><a href="service.html">Our Services</a>
+                            <li><a href="{{route('front.services')}}">Our Services</a>
                             </li>
-                            <li><a href="blog.html">Blog</a>
+                            <li><a href="{{ route('front.contact-us') }}">Contact</a>
                             </li>
-                            <li><a href="contact.html">Contact</a>
-                            </li>
+                            @if(!Auth::user())
                             <li><a href="{{route('login')}}">login</a>
                             </li>
                             <li><a href="#">Register</a>
                                 <ul class="sub-menu">
-                                    <li><a href="index.html">Customer</a></li>
-                                    <li><a href="index-2.html">Worker</a></li>
+                                    <li><a href="{{ route('customer.register') }}">Customer</a></li>
+                                    <li><a href="{{ route('provider.register') }}">Worker</a></li>
                                 </ul>
                             </li>
-                            <li><a href="{{route('register')}}">My Account</a>
+                            @else
+                                <li><a href="{{route('front.user-profile')}}">My Account</a>
+                                </li>
+                            @if(getLoggedInUser()->role === 'Admin')
+                                <li><a href="{{route('admin.dashboard')}}">Dashboard</a>
+                                </li>
+                                @endif
+                            <li>
+                                <form id="logout-form" action="{{ route('logout.user') }}" method="post">
+                                    @csrf
+                                </form>
+                                <a class="dropdown-item" href="#"
+                                   onclick="event.preventDefault(); localStorage.clear();  document.getElementById('logout-form').submit();">
+                                    Logout</a>
                             </li>
+                            @endif
+
                         </ul>
                     </nav>
                 </div>

@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
     <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-    <title>@yield('title')</title>
-{{--    <link rel="icon" href="{{ asset(getFaviconLogo()) }}" type="image/png">--}}
+    <title>@yield('title')| {{ getAppName() }}</title>
+    <link rel="icon" href="{{ asset( getLogoUrl()) }}" type="image/png">
     <meta name="csrf-token" content="{{ csrf_token() }}"/>
     <!-- CSS files -->
     <link href="{{ asset('dist/css/tabler.min.css') }}" rel="stylesheet"/>
@@ -42,16 +42,41 @@
 @include('layouts.sidebar')
     <div class="page-wrapper">
         <!-- Page header -->
-        <div class="page-header d-print-none">
+        <div class="page-header d-print-none mt-2">
             <div class="container-xl">
                 <div class="row g-2 align-items-center">
-                    <div class="col">
+                    <div class="col d-flex">
                         <!-- Page pre-title -->
                         <h2 class="page-title">
                             @yield('title')
                         </h2>
+
+
+                        <div class="nav-item dropdown profile-header d-flex">
+                            <div>
+                                <form id="logout-form" action="{{ route('logout.user') }}" method="post">
+                                    @csrf
+                                </form>
+                                <a class="btn" href="#"
+                                   onclick="event.preventDefault(); localStorage.clear();  document.getElementById('logout-form').submit();">
+                                    Logout</a>
+                            </div>
+
+                            <div>
+                                <a href="{{ route('profile.edit') }}" class="nav-link d-flex lh-1 text-reset p-0">
+                                    <span class="avatar avatar-sm" style="background-image: url( {{ getLoggedInUser()->image_url }})"></span>
+                                    <div class="d-none d-xl-block ps-2">
+                                        <div>{{ getLoggedInUser()->full_name }}</div>
+                                        <div class="mt-1 small text-muted">{{ getLoggedInUser()->role }}</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                        </div>
                     </div>
                     <!-- Page title actions -->
+
+
                 </div>
             </div>
         </div>
@@ -86,6 +111,14 @@
 <script src="{{ mix('assets/js/custom/custom.js') }}"></script>
 <script src="{{ mix('assets/js/custom/delete.js') }}"></script>
 <script src="{{ mix('assets/js/custom/add-edit-profile-picture.js') }}"></script>
+<script>
+    $(document).ready(function() {
+        $('.custom-dropdown').dropdown(); // Initialize all dropdowns
+
+        // Or, if you want to target a specific dropdown
+        // $('#yourDropdownId').dropdown();
+    });
+</script>
 @routes
 @yield('js')
 <script>

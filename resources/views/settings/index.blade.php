@@ -47,7 +47,7 @@
                         <div class="col-sm-6 col-md-6">
                             <div class="mb-3">
                                 <label class="form-label">State:<span class="required"></span></label>
-                                <input type="text" class="form-control" placeholder="Enter State" name="state" value="{{$settings['country']}}" required>
+                                <input type="text" class="form-control" placeholder="Enter State" name="state" value="{{$settings['state']}}" required>
                             </div>
                         </div>
                         <div class="col-sm-6 col-md-6">

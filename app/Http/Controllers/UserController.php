@@ -16,8 +16,11 @@ use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Laracasts\Flash\Flash;
 use Spatie\Permission\Models\Role;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
@@ -34,73 +37,20 @@ class UserController extends AppBaseController
     }
 
     /**
-     * @param  ChangePasswordRequest  $request
      *
-     * @return JsonResponse
+     * @return Application|Factory|\Illuminate\Foundation\Application|View
      */
-    public function changePassword(ChangePasswordRequest $request)
+    public function profileUpdate()
     {
-        $input = $request->all();
+        $user = getLoggedInUser();
 
-        try {
-            $user = $this->userRepository->changePassword($input);
-
-            return $this->sendSuccess( __('messages.flash.password_update'));
-        } catch (Exception $e) {
-            return $this->sendError($e->getMessage(), 422);
-        }
-    }
-
-    /**
-     * @param  UpdateUserProfileRequest  $request
-     *
-     * @return JsonResponse
-     */
-    public function profileUpdate(UpdateUserProfileRequest $request)
-    {
-        $input = $request->all();
-
-        try {
-            $user = $this->userRepository->profileUpdate($input);
-
-            return $this->sendResponse($user,  __('messages.flash.profile_update'));
-        } catch (Exception $e) {
-            return $this->sendError($e->getMessage(), 422);
-        }
-    }
-
-    /**
-     * Show the form for editing the specified User.
-     *
-     * @return JsonResponse
-     */
-    public function editProfile()
-    {
-        $user = getLoggedInUser()->append('image_url');
-
-        return $this->sendResponse($user, __('messages.flash.user_retrieved'));
+        return view('profile.edit',compact('user'));
     }
 
     /**
      * @param  Request  $request
      *
      * @return JsonResponse
-     */
-    public function updateLanguage(Request $request)
-    {
-        $language = $request->get('language');
-
-        /** @var User $user */
-        $user = $request->user();
-        $user->update(['language' => $language]);
-
-        return $this->sendSuccess( __('messages.flash.language_update'));
-    }
-
-    /**
-     * @param  Request  $request
-     *
-     * @return \Illuminate\Http\JsonResponse
      * @throws Exception
      *
      */
@@ -138,11 +88,18 @@ class UserController extends AppBaseController
         try {
             DB::beginTransaction();
             $input = $request->all();
+
             $input['status'] = isset($input['status']) ? 1 : 0;
             $input['is_active'] = isset($input['is_active']) ? 1 : 0;
             $this->userRepository->store($input);
-            Flash::success('User added successfully.');
             DB::commit();
+
+            if ($input['front_side'] === 'front-site'){
+                Flash::success('Your account has been created successfully.');
+                return redirect(route('login'));
+            }
+
+            Flash::success('User added successfully.');
 
             return redirect(route('users.index'));
         } catch (Exception $e) {
@@ -192,6 +149,17 @@ class UserController extends AppBaseController
         $input['status'] = isset($input['status']) ? 1 : 0;
         $input['is_active'] = isset($input['is_active']) ? 1 : 0;
         $this->userRepository->updateUser($input, $user);
+
+        if ($input['front_side'] === 'front-site'){
+            Flash::success('Your account has been updated successfully.');
+            return redirect(route('front.user-profile'));
+        }
+
+        if ($input['front_side'] === 'admin-site'){
+            Flash::success('Your account has been updated successfully.');
+            return redirect(route('profile.edit'));
+        }
+
         Flash::success('User updated successfully.');
 
         return redirect(route('users.index'));
@@ -201,7 +169,7 @@ class UserController extends AppBaseController
      * Remove the specified resource from storage.
      *
      * @param  User  $user
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function destroy(User $user)
     {
@@ -217,7 +185,7 @@ class UserController extends AppBaseController
     /**
      * @param int $id
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function activeDeactiveUserStatus($id)
     {
@@ -232,7 +200,7 @@ class UserController extends AppBaseController
      * @param $id
      *
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function activeDeactiveStatus($id)
     {
@@ -250,7 +218,7 @@ class UserController extends AppBaseController
     /**
      * @param  int  $id
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function isVerified($id)
     {
@@ -259,5 +227,31 @@ class UserController extends AppBaseController
         $user->save();
 
         return $this->sendSuccess('User Email verified successfully.');
+    }
+
+    public function changePassword(Request $request)
+    {
+        $this->validate($request, [
+            'current_password' => 'required|string',
+            'new_password' => 'required|confirmed|min:8|string'
+        ]);
+        $auth = Auth::user();
+
+        // The passwords matches
+        if (!Hash::check($request->get('current_password'), $auth->password))
+        {
+            return back()->with('error', "Current Password is Invalid");
+        }
+
+// Current password and new password same
+        if (strcmp($request->get('current_password'), $request->new_password) == 0)
+        {
+            return redirect()->back()->with("error", "New Password cannot be same as your current password.");
+        }
+
+        $user =  User::find($auth->id);
+        $user->password =  Hash::make($request->new_password);
+        $user->save();
+        return back()->with('success', "Password Changed Successfully");
     }
 }
