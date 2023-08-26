@@ -8,16 +8,6 @@ $.ajaxSetup({
     },
 })
 
-let firstTime = true
-
-var tooltipTriggerList =
-    [].slice.call(
-        document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-    return new bootstrap.Tooltip(tooltipTriggerEl)
-});
-
-
 $('[data-control="select2"]').each(function () {
     $(this).select2()
 });
@@ -64,23 +54,12 @@ $(document).on('select2:open', () => {
     allFound[allFound.length - 1].focus()
 })
 
-$('[data-control="select2"]').each(function () {
-    $(this).select2()
-})
+
 
 
 $(document).ready(function () {
     // initializer script for bootstrap 4 tooltip
     $('[data-bs-toggle="tooltip"]').tooltip()
-
-    function tooltip () {
-        var tooltipTriggerList =
-            [].slice.call(
-                document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-        });
-    }
 
     // script to active parent menu if sub menu has currently active
     let hasActiveMenu = $(document).
@@ -359,7 +338,7 @@ $(function () {
         e.stopPropagation()
         let notificationId = $(this).data('id')
         let notification = $(this)
-        $('[data-toggle="tooltip"]').tooltip('hide')
+        // $('[data-toggle="tooltip"]').tooltip('hide')
 
         $.ajax({
             type: 'get',

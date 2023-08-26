@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateCategoryRequest;
+use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
 use App\Repositories\CategoryRepository;
 use Illuminate\Http\Request;
@@ -41,31 +42,19 @@ class CategoryController extends AppBaseController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(CreateCategoryRequest $request)
+    public function store(Request $request)
     {
         $input = $request->all();
         $input['status'] = ! isset($input['status']) ? false : true;
-        $this->categoryRepository->create($input);
+        $category = $this->categoryRepository->create($input);
+
+        if (isset($input['image']) && ! empty($input['image'])) {
+            $fileExtension = getFileName('Category', $input['image']);
+            $category->addMedia($input['image'])->usingFileName($fileExtension)->toMediaCollection(Category::COLLECTION_CATEGORY_PICTURES,
+                config('app.media_disc'));
+        }
 
         return response()->json(['success' => 'Category saved successfully.']);
-    }
-
-    /**
-     * @param  int  $id
-     *
-     * @return Application|Factory|RedirectResponse|Redirector|View
-     */
-    public function show($id)
-    {
-        $category = Category::find($id);
-        if (empty($category)) {
-            Flash::error(__('messages.flash.medicine_category_not_found'));
-
-            return redirect(route('categories.index'));
-        }
-        $medicines = $category->medicines;
-
-        return view('categories.show', compact('medicines', 'category'));
     }
 
     /**
@@ -86,15 +75,22 @@ class CategoryController extends AppBaseController
      * @param  Category  $category
      * @param  UpdateCategoryRequest  $request
      *
-     * @return JsonResponse
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Category $category, UpdateCategoryRequest $request)
+    public function update(Category $category, Request $request)
     {
         $input = $request->all();
-        $input['is_active'] = ! isset($input['is_active']) ? false : true;
-        $this->categoryRepository->update($input, $category->id);
+        $input['status'] = ! isset($input['status']) ? false : true;
+        $category = $this->categoryRepository->update($input, $category->id);
 
-        return $this->sendSuccess(__('messages.flash.medicine_category_retrieved'));
+        if (isset($input['image']) && !empty($input['image'])) {
+            $category->clearMediaCollection(Category::COLLECTION_CATEGORY_PICTURES);
+            $fileExtension = getFileName('Category', $input['image']);
+            $category->addMedia($input['image'])->usingFileName($fileExtension)->toMediaCollection(Category::COLLECTION_CATEGORY_PICTURES,
+                config('app.media_disc'));
+        }
+
+        return $this->sendSuccess('Category updated succecssfully.');
     }
 
     /**

@@ -1,0 +1,76 @@
+.service-more-btn {
+  width: 140px;
+  float: right;
+}
+
+.service-category-image {
+  height: 250px;
+  width: 270px;
+  max-height: 250px;
+  max-width: 270px;
+  object-fit: cover;
+}
+
+.service-detail-large-image {
+  height: 570px;
+  width: 570px;
+  max-height: 570px;
+  max-width: 570px;
+  object-fit: cover;
+}
+
+.image {
+  display: inline-block;
+  flex-shrink: 0;
+  -o-object-fit: cover;
+  object-fit: cover;
+  position: relative;
+}
+
+.image-picker {
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 0.475rem;
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+
+  .picker-edit {
+    align-items: center;
+    background-color: #fff;
+    display: flex;
+    height: 25px;
+    justify-content: center;
+    position: absolute;
+    right: -10px;
+    text-align: center;
+    top: -10px;
+    width: 25px;
+    border: 0.063rem solid #e9ecef;
+    box-shadow: 0 5px 20px rgba(173, 181, 189, .2);
+    cursor: pointer;
+  }
+
+  .previewImage {
+    background-position: 50%;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    border-radius: 0.313rem;
+    height: 100px;
+    width: 100px;
+    border: 0.063rem solid #e9ecef;
+    box-shadow: 0 5px 20px rgba(173, 181, 189, .2);
+  }
+}
+
+.fs-small {
+  font-size: .75rem;
+}
+
+.text-gray-500 {
+  color: #adb5bd!important;
+}
+
+.fa-pen:before {
+  cursor: pointer;
+}
