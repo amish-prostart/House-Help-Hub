@@ -260,7 +260,7 @@ function redirectToDashboard(): string
     $user = Auth::user();
 
     if ($user->role === 'Admin') {
-        return 'admin/dashboard';
+        return 'admin/users';
     }
     else {
         return '/';
