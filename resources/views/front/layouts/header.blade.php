@@ -76,7 +76,7 @@
                                 <li><a href="{{route('front.user-profile')}}">My Account</a>
                                 </li>
                             @if(getLoggedInUser()->role === 'Admin')
-                                <li><a href="{{route('admin.dashboard')}}">Dashboard</a>
+                                <li><a href="{{route('users.index')}}">Dashboard</a>
                                 </li>
                                 @endif
                             <li>

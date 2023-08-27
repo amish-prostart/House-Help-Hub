@@ -199,57 +199,5 @@
     </div>
     <!--Service section end-->
 
-    <!--Contact section start-->
-    <div class="contact-section section fix bg-image jarallax" data-bg="{{ asset('front/assets/images/bg/contact-bg.jpg')}}">
-        <div class="container">
-            <div class="row">
-                <div class="offset-lg-6 col-lg-6 bg-black">
-                    <div class="contact-area">
-                        <div class="row">
-                            <div class="col">
-                                <div class="section-title color-white text-left mb-35">
-                                    <h1>Get A Quick Quote</h1>
-                                    <p>Creating a sustainable future through building preservation, green architecture, and smart design.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="contact-form">
-                            <form action="https://htmldemo.net/murphy/murphy/assets/php/mail.php">
-                                <div class="row row-5">
-                                    <div class="col-md-6">
-                                        <div class="contact-form-style mb-10">
-                                            <input name="name" placeholder="Your Name*" type="text">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="contact-form-style mb-10">
-                                            <input name="email" placeholder="Email*" type="email">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="contact-form-style mb-10">
-                                            <input name="subject" placeholder="Subject*" type="text">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="contact-form-style mb-10">
-                                            <input name="phone" placeholder="Phone*" type="number">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="contact-form-style">
-                                            <textarea name="message" placeholder="Type your message here.."></textarea>
-                                            <button class="btn mt-10" type="submit"><span>Send message</span></button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
-    <!--Contact section end-->
+    @include('front.get-quick-note')
 @endsection

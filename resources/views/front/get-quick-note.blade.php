@@ -16,7 +16,7 @@
             </div>
             <div class="col-md-3">
                 <div class="cta-btn text-center">
-                    <a href="#" class="btn"> GET QUICK QUOTE <i class="fa fa-angle-double-right"></i></a>
+                    <a href="{{ route('front.contact-us') }}" class="btn"> GET QUICK QUOTE <i class="fa fa-angle-double-right"></i></a>
                 </div>
             </div>
         </div>
